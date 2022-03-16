@@ -23,7 +23,7 @@ namespace DataAccess.Data
                 "spEmployee_AddNew", new
                 {
                     model.Name,
-                    model.Surename,
+                    model.Surname,
                     model.Phone,
                     model.CompanyId,
                     model.Pasport.Type,
@@ -33,32 +33,52 @@ namespace DataAccess.Data
                 });
             return result.FirstOrDefault();
         }
-        public async Task<EmployeeModel?> GetEmployeeById(int id)
-        {
-            var result = await _db.GetData<EmployeeModel, dynamic>(
-                "sp_Employee_Get_By_Id", new { id });
-            return result.FirstOrDefault();
-        }
-        public Task<IEnumerable<EmployeeModel>> GetEmployeesByCompanyId(int id) =>
-            _db.GetData<EmployeeModel, dynamic>("spEmployee_GetEmpCompany", new { id });
 
-        public Task<IEnumerable<EmployeeModel>> GetEmployeesByCompanyIdDepartment(int id, string department) =>
-           _db.GetData<EmployeeModel, dynamic>("spEmployee_GetEmpCompany", new { id, department });
+        public async Task<IEnumerable<EmployeeModel>> GetEmployeesByCompanyId(int CompanyId) {
+           
+            IEnumerable<DirtyEmployeeModel>? dirtyresult = await _db.GetData<DirtyEmployeeModel, dynamic>("spEmployee_GetEmpCompany", new { CompanyId });
+            return GetModels(dirtyresult);
+        }
+
+        public async Task<IEnumerable<EmployeeModel>> GetEmployeesByCompanyIdDepartment(int CompanyId, string DepartmentName)
+        {
+            IEnumerable<DirtyEmployeeModel>? dirtyresult = await _db.GetData<DirtyEmployeeModel, dynamic>("spEmployee_GetEmpCompanyDepartment", new { CompanyId, DepartmentName});
+            return GetModels(dirtyresult);
+        }
+  
 
         public Task DeleteEmployee(int id) => _db.SetData("spEmployee_Delete", new { id });
 
-        public Task UpdateEmployee(EmployeeModel model) => _db.SetData("sp_Employee_Update", new
+        public Task UpdateEmployee(int Id, DirtyEmployeeModel model) => _db.SetData("sp_Employee_Update", new
         {
+            Id,
             model.Name,
-            model.Surename,
+            model.Surname,
             model.Phone,
             model.CompanyId,
-            model.Pasport.Type,
-            model.Pasport.Number,
-            model.Department.DepartmentName,
-            model.Department.DepartmentPhone
+            model.Type,
+            model.Number,
+            model.DepartmentName,
+            model.DepartmentPhone
         });
 
+        private IEnumerable<EmployeeModel> GetModels(IEnumerable<DirtyEmployeeModel>? dirtyresult) {
+            List<EmployeeModel> res = new List<EmployeeModel>();
+            foreach (DirtyEmployeeModel model in dirtyresult)
+            {
+                res.Add(new EmployeeModel()
+                {
+                    Id = model.Id,
+                    Name = model.Name,
+                    Surname = model.Surname,
+                    Phone = model.Phone,
+                    CompanyId = (int)model.CompanyId,
+                    Pasport = new PasportModel() { Type = model.Type, Number = model.Number },
+                    Department = new DepartmentModel() { DepartmentName = model.DepartmentName, DepartmentPhone = model.DepartmentPhone }
+                });
+            }
+            return res;
+        }
 
     }
 }

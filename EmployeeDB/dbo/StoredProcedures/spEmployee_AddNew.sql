@@ -12,14 +12,14 @@ AS
 begin
 	DECLARE @DepartmentId int 
 
-	IF NOT EXISTS (SELECT 1 FROM dbo.[Departments] where Name = @DepartmentName) 
+	IF NOT EXISTS (SELECT 1 FROM dbo.[Departments] where DepartmentName = @DepartmentName) 
 	BEGIN
-		INSERT INTO dbo.[Departments] (Name, Phone) VALUES (@DepartmentName, @DepartmentPhone);
+		INSERT INTO dbo.[Departments] (DepartmentName, DepartmentPhone) VALUES (@DepartmentName, @DepartmentPhone);
 		SET @DepartmentId =  IDENT_CURRENT('Departments');
 	END 
 	ELSE
 	BEGIN
-		 SELECT TOP 1 @DepartmentId = Id FROM dbo.[Departments] where Name = @DepartmentName;
+		 SELECT TOP 1 @DepartmentId = Id FROM dbo.[Departments] where DepartmentName = @DepartmentName;
 	END
 
 	insert into dbo.[Pasports] (Type, Number) values (@PasportType, @PasportNumber);
