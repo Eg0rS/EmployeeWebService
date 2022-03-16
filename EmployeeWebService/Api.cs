@@ -1,5 +1,6 @@
 ﻿using DataAccess.Data;
 using DataAccess.Models;
+using
 
 namespace EmployeeWebService
 {
@@ -14,6 +15,9 @@ namespace EmployeeWebService
             app.MapDelete("/Employee/{id}", DeleteEmployee);
         }
 
+        ///<summary>
+        ///Endpoint for adding an employee to the database.
+        ///<summary>
         private static async Task<IResult> InsertEmployee(EmployeeModel model, IEmployeeData data) 
         {
             try
@@ -26,6 +30,9 @@ namespace EmployeeWebService
                 return Results.Problem(ex.Message);
             }
         }
+        ///<summary>
+        ///Endpoint to get all company employees with a given ID.
+        ///<summary>
         private static async Task<IResult> GetEmployeesByCompanyId(int companyid, IEmployeeData data)
         {
             try
@@ -37,6 +44,9 @@ namespace EmployeeWebService
                 return Results.Problem(ex.Message);
             }
         }
+        ///<summary>
+        ///Endpoint to get all company employees with a given ID and department name.
+        ///<summary>
         private static async Task<IResult> GetEmployeesByCompanyIdDepartment(int companyid, string departmentName, IEmployeeData data)
         {
             try
@@ -48,12 +58,14 @@ namespace EmployeeWebService
                 return Results.Problem(ex.Message);
             }
         }
-        private static async Task<IResult> UpdateEmployee(JsonContent json, IEmployeeData data)
+        ///<summary>
+        ///Endpoint for updating information about an employee with a given ID.
+        ///<summary>
+        private static async Task<IResult> UpdateEmployee(int id, EmployeeModel model, IEmployeeData data)
         {
             try
             {
-               
-               // await data.UpdateEmployee(model.Id, model);
+                await data.UpdateEmployee(id, model);
                 return Results.Ok();
             }
             catch (Exception ex)
@@ -61,6 +73,9 @@ namespace EmployeeWebService
                 return Results.Problem(ex.Message);
             }
         }
+        ///<summary>
+        ///Endpoint for deleting information about an employee with a given ID.
+        ///<summary>
         private static async Task<IResult> DeleteEmployee(int id, IEmployeeData data)
         {
             try

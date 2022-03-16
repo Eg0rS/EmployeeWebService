@@ -8,6 +8,6 @@ namespace DataAccess.Data
         Task<IEnumerable<EmployeeModel>> GetEmployeesByCompanyId(int id);
         Task<IEnumerable<EmployeeModel>> GetEmployeesByCompanyIdDepartment(int id, string department);
         Task<int?> InsertEmployee(EmployeeModel model);
-        Task UpdateEmployee(int id, DirtyEmployeeModel model);
+        Task UpdateEmployee(int id, EmployeeModel model);
     }
 }

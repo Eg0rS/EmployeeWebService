@@ -49,17 +49,17 @@ namespace DataAccess.Data
 
         public Task DeleteEmployee(int id) => _db.SetData("spEmployee_Delete", new { id });
 
-        public Task UpdateEmployee(int Id, DirtyEmployeeModel model) => _db.SetData("sp_Employee_Update", new
+        public Task UpdateEmployee(int Id, EmployeeModel model) => _db.SetData("sp_Employee_Update", new
         {
             Id,
             model.Name,
             model.Surname,
             model.Phone,
             model.CompanyId,
-            model.Type,
-            model.Number,
-            model.DepartmentName,
-            model.DepartmentPhone
+            model.Pasport.Type,
+            model.Pasport.Number,
+            model.Department.DepartmentName,
+            model.Department.DepartmentPhone
         });
 
         private IEnumerable<EmployeeModel> GetModels(IEnumerable<DirtyEmployeeModel>? dirtyresult) {
